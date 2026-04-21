@@ -1,7 +1,6 @@
-from core.common.metodos_base import MetodoNumericoBase
-import math
+from core.common.metodos_base import MetodoRaizBase
 
-class PuntoFijo(MetodoNumericoBase):
+class PuntoFijo(MetodoRaizBase):
     
     def ejecutar(self, g, x0):
         log_pasos = [

@@ -1,8 +1,8 @@
-from core.common.metodos_base import MetodoNumericoBase
+from core.common.metodos_base import MetodoRaizBase
 
 from utils.maths import calcular_aceleracion_aitken
 
-class PuntoFijoAitken(MetodoNumericoBase):
+class PuntoFijoAitken(MetodoRaizBase):
     
     def ejecutar(self, g, x0):
         log_pasos = [

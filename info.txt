@@ -1,0 +1,3 @@
+***** Comando para levantar app  *****
+
+streamlit run app.py

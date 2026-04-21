@@ -1,6 +1,6 @@
-from core.common.metodos_base import MetodoNumericoBase
+from core.common.metodos_base import MetodoRaizBase
 
-class NewtonRaphson(MetodoNumericoBase):
+class NewtonRaphson(MetodoRaizBase):
     
     def ejecutar(self, f, f_prima, x0, derivada_str):
         log_pasos = [

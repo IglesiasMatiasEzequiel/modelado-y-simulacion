@@ -58,13 +58,23 @@ class Lagrange(MetodoInterpolacionBase):
 
         if f_str and x_eval is not None:
             log_pasos.append("---")
-            log_pasos.append(f"### Cálculo de Error en $x = {x_eval}$")
+            log_pasos.append(f"### Análisis de Error en $x = {x_eval}$")
+            
+            # --- NUEVO: INFORMACIÓN TEÓRICA EN EL LOG ---
+            log_pasos.append("> **💡 Conceptos Evaluados:**")
+            log_pasos.append("> * **Error Local:** Es la diferencia absoluta exacta $E = |f(x) - P(x)|$. Solo calculable si conocemos $f(x)$.")
+            log_pasos.append("> * **Cota Máxima:** Límite superior garantizado por el Teorema de Interpolación. Asegura que el Error Local nunca superará este valor, basándose en la derivada máxima.")
+            log_pasos.append("") 
+            # --------------------------------------------
             
             try:
-                f_sym = sp.sympify(f_str, locals={'e': sp.E})
-                val_real = float(f_sym.subs(x, x_eval))
-                val_aprox = float(P_x.subs(x, x_eval))
+                f_str_limpio = f_str.lower().replace("f(x)=", "").replace("f(x) =", "").replace("y=", "").replace("y =", "").replace("sen", "sin").strip()
+                f_sym = sp.sympify(f_str_limpio, locals={'e': sp.E, 'pi': sp.pi})
+                
+                val_real = float(f_sym.subs(x, x_eval).evalf())
+                val_aprox = float(P_x.subs(x, x_eval).evalf())
                 err_local = abs(val_real - val_aprox)
+                # ---------------------------------------------
                 
                 log_pasos.append("**1. Error Local (Valor Verdadero):**")
                 log_pasos.append(f"$E_{{local}} = |f({x_eval}) - P({x_eval})| = |{val_real:.5f} - {val_aprox:.5f}| = {err_local:.5f}$")

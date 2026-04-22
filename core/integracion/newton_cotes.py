@@ -96,6 +96,48 @@ class NewtonCotes(MetodoIntegracionBase):
             except Exception:
                 log_pasos.append("*Aviso: No se pudo calcular la primitiva analítica para obtener el error exacto.*")
 
+            log_pasos.append("---")
+            log_pasos.append("**4. Cota de Error de Truncamiento Teórico ($E_T$):**")
+
+            try:
+                if regla == "Trapecio":
+                    orden_deriv = 2
+                    coef_str = "-\\frac{b-a}{12} h^2"
+                    coef_num = -((b - a) / 12) * (h ** 2)
+                elif regla == "Simpson 1/3":
+                    orden_deriv = 4
+                    coef_str = "-\\frac{b-a}{180} h^4"
+                    coef_num = -((b - a) / 180) * (h ** 4)
+                elif regla == "Simpson 3/8":
+                    orden_deriv = 4
+                    coef_str = "-\\frac{b-a}{80} h^4"
+                    coef_num = -((b - a) / 80) * (h ** 4)
+
+                derivada_sym = sp.diff(f_sym, x, orden_deriv)
+                log_pasos.append(f"**Paso A:** Derivada de orden $n={orden_deriv}$")
+                log_pasos.append(f"$f^{{({orden_deriv})}}(x) = {sp.latex(derivada_sym)}$")
+
+                f_deriv_lamb = sp.lambdify(x, derivada_sym, 'math')
+                x_rango = np.linspace(a, b, 1000)
+                M = max([abs(f_deriv_lamb(val)) for val in x_rango])
+                
+                log_pasos.append(f"**Paso B:** Encontrar el máximo absoluto $M$ en el intervalo $[{a}, {b}]$")
+                log_pasos.append(f"$\\max |f^{{({orden_deriv})}}(x)| = M \\approx {M:.6f}$")
+
+                cota_error = abs(coef_num * M)
+                log_pasos.append(f"**Paso C:** Calcular la Cota de Error")
+                log_pasos.append(f"$|E_T| \\le \\left| {coef_str} \\right| \\cdot M$")
+                log_pasos.append(f"$|E_T| \\le \\left| {coef_num:.6f} \\right| \\cdot {M:.6f} = {cota_error:.6f}$")
+
+                if err_abs is not None:
+                    if err_abs <= cota_error:
+                        log_pasos.append(f"✅ **Verificación del Teorema:** El Error Verdadero ({err_abs:.6f}) cumple con ser $\\le$ a la Cota de Truncamiento.")
+                    else:
+                        log_pasos.append(f"⚠️ **Aviso:** El error superó la cota. Esto puede deberse a errores de redondeo de punto flotante de la computadora.")
+
+            except Exception as e:
+                log_pasos.append(f"*Aviso: No se pudo realizar el cálculo analítico de la cota teórica. ({str(e)})*")
+
             return area_total, iteraciones, log_pasos, None
 
         except Exception as e:

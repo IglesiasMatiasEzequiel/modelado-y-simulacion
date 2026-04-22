@@ -17,9 +17,9 @@ def renderizar_newton_cotes():
             
             c1, c2 = st.columns(2)
             with c1:
-                a = st.number_input("Límite inferior (a)", value=0.0, step=0.5)
+                a = st.number_input("Límite inferior (a)", value=0.0, format="%.6f")
             with c2:
-                b = st.number_input("Límite superior (b)", value=4.0, step=0.5)
+                b = st.number_input("Límite superior (b)", value=4.0, format="%.6f")
                 
             n = st.number_input("Subintervalos (n)", min_value=1, value=4, step=1, 
                                 help="Cantidad de 'pedacitos' en los que se divide el área.")

@@ -7,8 +7,12 @@ from ui.raices.vistas_comparativa import renderizar_comparativa
 from ui.interpolacion.vistas_lagrange import renderizar_lagrange
 from ui.derivacion.vistas_diferencias_finitas import renderizar_diferencias_finitas
 from ui.integracion.vistas_newton_cotes import renderizar_newton_cotes
+from ui.integracion.vistas_montecarlo import renderizar_montecarlo
+from ui.integracion.vistas_montecarlo_dobles import renderizar_montecarlo_doble
+from ui.ecuaciones.vistas_edo import renderizar_edo
+from ui.ecuaciones.vistas_edo_comparativa import renderizar_comparativa_edo
 
-from core.common.enums import Categoria, MetodoRaices, MetodoInterpolacion, MetodoDerivacion, MetodoIntegracion
+from core.common.enums import Categoria, MetodoRaices, MetodoInterpolacion, MetodoDerivacion, MetodoIntegracion, MetodoEcuaciones
 from core.common.constants import INFO_METODOS
 
 st.set_page_config(page_title="Simulador de Métodos Numéricos", layout="wide")
@@ -50,6 +54,8 @@ with st.container(border=True):
             opciones_metodos = [m.value for m in MetodoDerivacion]
         elif categoria_seleccionada == Categoria.INTEGRACION:
             opciones_metodos = [m.value for m in MetodoIntegracion]
+        elif categoria_seleccionada == Categoria.ECUACIONES:
+            opciones_metodos = [m.value for m in MetodoEcuaciones]
             
         metodo_seleccionado = st.selectbox("Seleccione el método", opciones_metodos, label_visibility="collapsed")
         
@@ -71,4 +77,9 @@ elif categoria_seleccionada == Categoria.DERIVACION:
     if metodo_seleccionado == MetodoDerivacion.DIFERENCIAS_FINITAS: renderizar_diferencias_finitas()
 elif categoria_seleccionada == Categoria.INTEGRACION:
     if metodo_seleccionado == MetodoIntegracion.NEWTON_COTES : renderizar_newton_cotes()
+    elif metodo_seleccionado == MetodoIntegracion.MONTECARLO : renderizar_montecarlo()
+    elif metodo_seleccionado == MetodoIntegracion.MONTECARLO_DOBLE : renderizar_montecarlo_doble()
+elif categoria_seleccionada == Categoria.ECUACIONES:
+    if metodo_seleccionado == MetodoEcuaciones.EDO : renderizar_edo()
+    elif metodo_seleccionado == MetodoEcuaciones.EDO_COMPARATIVA : renderizar_comparativa_edo()
 

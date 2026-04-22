@@ -5,6 +5,7 @@ class Categoria(str, Enum):
     INTERPOLACION = "Interpolación y Aproximación"
     DERIVACION = "Derivación"
     INTEGRACION = "Integración"
+    ECUACIONES = "Ecuaciones"
 
 class MetodoRaices(str, Enum):
     BISECCION = "Bisección"
@@ -21,3 +22,9 @@ class MetodoDerivacion(str, Enum):
 
 class MetodoIntegracion(str, Enum):
     NEWTON_COTES = "Newton Cotes"
+    MONTECARLO = "Montecarlo"
+    MONTECARLO_DOBLE = "Montecarlo (Integrales dobles)"
+
+class MetodoEcuaciones(str, Enum):
+    EDO = "Ecuaciones Diferenciales Ordinarias"
+    EDO_COMPARATIVA = "Ecuaciones Diferenciales Ordinarias (Comparativa)"

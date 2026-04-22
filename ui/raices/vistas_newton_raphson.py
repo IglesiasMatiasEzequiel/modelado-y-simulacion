@@ -34,7 +34,7 @@ def renderizar_newton_raphson():
         try:
             f = parsear_funcion(funcion_str)
             
-            f_prima, derivada_str = obtener_derivada(funcion_str)
+            derivada_str, f_prima = obtener_derivada(funcion_str)
             
             simulador = NewtonRaphson(tol=tol, max_iter=int(max_iter))
             raiz, iteraciones, log_pasos, error_msg = simulador.ejecutar(f, f_prima, x0, derivada_str)

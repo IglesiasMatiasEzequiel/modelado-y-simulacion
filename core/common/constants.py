@@ -32,7 +32,7 @@ INFO_METODOS = {
     4. Si $f(a)$ y $f(c)$ tienen signos opuestos, la raíz está en la primera mitad. El nuevo límite superior será $b = c$.
     5. Si tienen el mismo signo, la raíz está en la segunda mitad. El nuevo límite inferior será $a = c$.
     
-    **Condiciones:** La función debe ser continua. Nunca falla si se elige bien el intervalo inicial (Teorema de Bolzano).
+    **Condiciones (Teorema de Bolzano):** Para que este método garantice encontrar una raíz, la función $f(x)$ **debe ser continua** en el intervalo cerrado $[a, b]$ y debe existir un cambio de signo tal que $f(a) \cdot f(b) < 0$. El Teorema de Bolzano es la base matemática que asegura que, bajo estas dos condiciones, la curva cortará el eje X al menos una vez.
     """,
     
     "Punto Fijo": """
@@ -47,13 +47,13 @@ INFO_METODOS = {
     4. Agarrar el resultado y volver a meterlo en la función: $x_2 = g(x_1)$.
     5. Repetir la iteración $x_{i+1} = g(x_i)$ hasta que el valor nuevo sea casi idéntico al anterior.
     
-    **Condiciones (Teorema de Banach):** Para que los números no se disparen al infinito (divergencia), la derivada de tu función despejada debe ser menor a 1 en valor absoluto ($|g'(x)| < 1$) cerca de la raíz.
+    **Condiciones (Teorema de Banach y Condición de Lipschitz):** Para garantizar que la sucesión no diverja hacia el infinito, la función $g(x)$ debe ser una "función contractiva". Esto se demuestra mediante la **Condición de Lipschitz**: debe existir una constante $L < 1$ tal que la distancia entre dos puntos evaluados siempre se achique. En la práctica (si $g$ es derivable), esto exige que el valor absoluto de su derivada sea estrictamente menor a 1 ($|g'(x)| < 1$) en un entorno de la raíz.
     """,
     
     "Punto Fijo Acelerado c/ Aitken": """
     ### Aceleración de Aitken ($\Delta^2$)
     **El Concepto:**
-    A veces, el Método de Punto Fijo avanza a pasos de tortuga. Aitken es un "atajo" matemático. Al ver cómo se comportan los primeros 3 puntos generados, Aitken adivina hacia dónde se está dirigiendo la secuencia y "salta" directamente hacia ese límite.
+    A veces, el Método de Punto Fijo avanza a pasos de tortuga (convergencia lineal). Aitken es un "atajo" matemático. Al ver cómo se comportan los primeros 3 puntos generados, Aitken analiza la tasa de error, adivina hacia dónde se está dirigiendo la secuencia y "salta" directamente hacia ese límite, logrando una convergencia casi cuadrática.
     
     **Pasos del Algoritmo:**
     1. Hacer dos iteraciones normales de Punto Fijo: $x_1 = g(x_0)$ y $x_2 = g(x_1)$.
@@ -62,13 +62,13 @@ INFO_METODOS = {
     3. Ese nuevo valor $x^*$ está mucho más cerca de la raíz. 
     4. Si el error no es lo suficientemente pequeño, tomar $x^*$ como el nuevo inicio ($x_0$) y volver al paso 1.
     
-    **Condiciones:** El denominador de la fórmula no debe ser cero. Solo funciona si la sucesión original de Punto Fijo ya iba a converger eventualmente.
+    **Condiciones:** El denominador de la fórmula no debe ser cero. Además, este método no hace milagros: solo funciona si la sucesión original de Punto Fijo ya iba a converger eventualmente (es decir, si $g(x)$ ya cumplía la condición de Lipschitz).
     """,
     
     "Newton-Raphson": """
     ### Método de Newton-Raphson
     **El Concepto:**
-    Es el "Fórmula 1" de los métodos numéricos. En lugar de encerrar la raíz, se para en un punto de la curva, dibuja una línea recta tangente, y se fija dónde esa recta choca contra el eje X. Ese choque será el nuevo punto para la siguiente iteración.
+    Es el "Fórmula 1" de los métodos numéricos. En lugar de encerrar la raíz, se para en un punto de la curva, dibuja una línea recta tangente (basada en la derivada), y se fija dónde esa recta choca contra el eje X. Ese choque será el nuevo punto para la siguiente iteración.
     
     **Pasos del Algoritmo:**
     1. Elegir un valor inicial $x_0$.
@@ -77,7 +77,7 @@ INFO_METODOS = {
        $$x_{i+1} = x_i - \\frac{f(x_i)}{f'(x_i)}$$
     4. Repetir hasta que la diferencia entre $x_{i+1}$ y $x_i$ sea casi nula.
     
-    **Condiciones:** Su mayor debilidad es que si la curva se vuelve plana en el punto que estás evaluando (es decir, la derivada $f'(x)$ es igual a $0$), el método explota por división por cero. Además, requiere conocer la derivada analítica previamente.
+    **Condiciones (Convergencia Local y Condición de Fourier):** Su falla fatal es la división por cero: si la curva se vuelve plana en el punto evaluado ($f'(x_i) = 0$), el método explota. A diferencia de Bisección, Newton no siempre converge. Para asegurar teóricamente que el método llegará a la raíz desde el punto $x_0$ elegido, se suele verificar la **Condición de Fourier**: $f(x) \cdot f''(x) > 0$ en el intervalo de búsqueda. Si converge, lo hace a velocidad cuadrática (duplica los decimales correctos en cada paso).
     """,
     
     "Interpolación de Lagrange": """
@@ -95,17 +95,25 @@ INFO_METODOS = {
     **Condiciones:** Genera un único polinomio de grado $n-1$ (donde $n$ es la cantidad de puntos). Si hay muchos puntos, el polinomio resultante oscila de forma violenta en los bordes (Fenómeno de Runge).
     """,
 
-   "Comparativa de Métodos": """
+"Comparativa de Métodos": """
     ### Análisis Comparativo Multimétodo
     **El Concepto:**
     Esta herramienta ejecuta simultáneamente los 4 métodos de búsqueda de raíces vistos en la cátedra bajo las mismas condiciones iniciales. 
     
     **¿Para qué sirve?**
-    Permite visualizar empíricamente los órdenes de convergencia:
-    * **Bisección:** Lenta (lineal) pero segura.
-    * **Punto Fijo:** Depende fuertemente de la función $g(x)$ elegida.
-    * **Aitken:** Acelera la convergencia lineal del Punto Fijo.
-    * **Newton-Raphson:** Extremadamente rápida (cuadrática), pero riesgosa si la derivada se acerca a cero.
+    Permite visualizar empíricamente el rendimiento de cada algoritmo, analizando su **Orden de Convergencia ($p$)** y su **Costo Computacional** (la cantidad de operaciones matemáticas por cada ciclo de ejecución):
+    
+    * **Bisección:** * **Orden de Ejecución:** Convergencia Lineal ($p=1$). 
+      * **Costo:** 1 evaluación de función ($f(x)$) por iteración. Es el más lento computacionalmente, pero el único que garantiza el resultado.
+    
+    * **Punto Fijo:** * **Orden de Ejecución:** Convergencia Lineal ($p=1$). 
+      * **Costo:** 1 evaluación de función ($g(x)$) por iteración. Su éxito depende exclusivamente de que la $g(x)$ elegida cumpla la condición de Lipschitz.
+    
+    * **Aitken ($\Delta^2$):** * **Orden de Ejecución:** Convergencia Superlineal (casi cuadrática). 
+      * **Costo:** Muy eficiente. Acelera la convergencia lineal reciclando 3 iteraciones previas de Punto Fijo sin obligar a la computadora a calcular derivadas complejas.
+    
+    * **Newton-Raphson:** * **Orden de Ejecución:** Convergencia Cuadrática ($p=2$). Duplica la cantidad de cifras decimales correctas en cada paso.
+      * **Costo:** 2 evaluaciones por iteración (la función $f(x)$ y su derivada $f'(x)$). Aunque cada paso es "computacionalmente más caro", requiere una cantidad de ciclos drásticamente menor para encontrar la raíz exacta.
     """,
 
    "Diferencias Finitas": """
@@ -133,31 +141,88 @@ INFO_METODOS = {
    "Newton Cotes": """
    La **Integración Numérica** nos permite calcular el área bajo una curva definida por una integral $\\int_{a}^{b} f(x) dx$ cuando la función es muy difícil (o imposible) de integrar analíticamente.
 
-   La familia de métodos de **Newton-Cotes** se basa en una idea geométrica simple: dividir el intervalo $[a, b]$ en $n$ partes iguales de ancho $h$ y reemplazar la curva original por polinomios más fáciles de integrar (líneas rectas, parábolas o cúbicas).
+   La familia de métodos de **Newton-Cotes** divide el intervalo $[a, b]$ en $n$ partes iguales de ancho $h$ y reemplaza la curva original por polinomios.
 
    ### 1. El ancho del subintervalo ($h$)
-   Todas las reglas utilizan un paso constante que se calcula así:
    $$h = \\frac{b - a}{n}$$
-   Donde $n$ es la cantidad de "pedacitos" en los que cortamos el área.
+
+   ---
 
    ### 2. Regla del Trapecio
-   * **Geometría:** Une los nodos usando líneas rectas (polinomios de grado 1).
-   * **Restricción:** Ninguna. Funciona con cualquier valor de $n$.
-   * **Precisión:** Es el método menos exacto. Su error global es de orden $O(h^2)$.
+   * **Geometría:** Une los nodos usando líneas rectas (polinomio grado 1).
+   * **Restricción:** Funciona con cualquier valor de $n$.
+   * **Fórmula de Aproximación:**
    $$\\text{Área} \\approx \\frac{h}{2} \\left[ f(x_0) + 2 \\sum_{i=1}^{n-1} f(x_i) + f(x_n) \\right]$$
+   * **Error de Truncamiento Global:**
+   $$E_T = -\\frac{b-a}{12} h^2 f''(\\mu)$$
+
+   ---
 
    ### 3. Regla de Simpson 1/3
-   * **Geometría:** Une los puntos de a tres, trazando una parábola suave (polinomio de grado 2).
-   * **Restricción:** Obliga a que $n$ sea un **número par**.
-   * **Precisión:** Es excelente para la mayoría de los casos. Su error global decae drásticamente, siendo de orden $O(h^4)$.
+   * **Geometría:** Une los puntos de a tres, trazando una parábola suave (polinomio grado 2).
+   * **Restricción:** $n$ debe ser un **número par**.
+   * **Fórmula de Aproximación:**
    $$\\text{Área} \\approx \\frac{h}{3} \\left[ f(x_0) + 4 \\sum f(x_{\\text{impares}}) + 2 \\sum f(x_{\\text{pares}}) + f(x_n) \\right]$$
+   * **Error de Truncamiento Global:**
+   $$E_{S1/3} = -\\frac{b-a}{180} h^4 f^{(4)}(\\mu)$$
+
+   ---
 
    ### 4. Regla de Simpson 3/8
-   * **Geometría:** Une los puntos de a cuatro, usando una curva cúbica (polinomio de grado 3). Se adapta mejor a curvas con cambios muy bruscos.
-   * **Restricción:** Obliga a que $n$ sea **múltiplo de 3**.
-   * **Precisión:** Tiene el mismo orden de error que Simpson 1/3 ($O(h^4)$), pero su coeficiente de error teórico es ligeramente menor.
+   * **Geometría:** Une los puntos de a cuatro, usando una curva cúbica (polinomio grado 3).
+   * **Restricción:** $n$ debe ser **múltiplo de 3**.
+   * **Fórmula de Aproximación:**
    $$\\text{Área} \\approx \\frac{3h}{8} \\left[ f(x_0) + 3 \\sum f(x_{\\text{resto}}) + 2 \\sum f(x_{\\text{múltiplos de 3}}) + f(x_n) \\right]$$
+   * **Error de Truncamiento Global:**
+   $$E_{S3/8} = -\\frac{b-a}{80} h^4 f^{(4)}(\\mu)$$
 
-   > **💡 El Secreto del Error:** A medida que aumentamos los subintervalos ($n$), el ancho $h$ se achica y el *Error de Truncamiento* disminuye. Sin embargo, para un mismo valor de $n$, las reglas de Simpson siempre darán una aproximación mucho mejor que la del Trapecio porque copian la curvatura real de la función.
+   ---
+
+   > **💡 Secretos del Error:** > * $\\mu$ representa un valor desconocido que pertenece al intervalo $[a, b]$.
+   > * $f''$ y $f^{(4)}$ representan la segunda y la cuarta derivada de la función original, respectivamente.
+   > * **El Truco de Simpson:** Como el error de Simpson depende de la derivada cuarta ($f^{(4)}$), si intentás integrar un polinomio de grado 3 (ej: $x^3+x^2$), su cuarta derivada es **cero**. Esto hace que el error se anule por completo, logrando que Simpson calcule integrales cúbicas con **precisión exacta**, ¡a pesar de usar solo parábolas!
+   """,
+
+   "Montecarlo": """
+   La **Integración por Monte Carlo** es un método numérico probabilístico. A diferencia de Newton-Cotes, que divide el área en figuras geométricas predecibles, Monte Carlo utiliza números pseudoaleatorios para estimar el resultado.
+
+   ### El Método del Valor Medio
+   El Teorema del Valor Medio para integrales nos dice que existe un rectángulo cuya área es exactamente igual al área bajo la curva. Monte Carlo busca aproximar la altura de ese rectángulo promediando la altura de la función en puntos aleatorios.
+
+   La fórmula principal es:
+   $$I \\approx (b - a) \\cdot \\frac{1}{N} \\sum_{i=1}^{N} f(x_i)$$
+
+   Donde:
+   * $(b - a)$ es el ancho de la base del intervalo.
+   * $N$ es la cantidad de puntos (muestras) generados al azar.
+   * $\\frac{1}{N} \\sum f(x_i)$ es el promedio de las alturas evaluadas (la altura del rectángulo).
+
+   ### ⚠️ El Secreto del Error
+   En los métodos determinísticos (como Simpson), el error disminuye drásticamente al aumentar los puntos ($O(h^4)$). En Monte Carlo, el error disminuye a una tasa de **$\\frac{1}{\\sqrt{N}}$**. 
+   Esto significa que para reducir el error a la mitad, ¡necesitás multiplicar por 4 la cantidad de puntos! Por eso, Monte Carlo no es eficiente para integrales simples de 1 dimensión, pero se vuelve invencible en integrales múltiples (de 3, 4 o más dimensiones) donde Simpson colapsa.
+   """,
+
+   "Ecuaciones Diferenciales Ordinarias": """
+   La resolución numérica de **Ecuaciones Diferenciales Ordinarias (EDO)** busca aproximar la curva de una función $y(x)$ sabiendo únicamente su punto de partida (Condición Inicial $y_0$) y una fórmula para calcular su pendiente en cualquier parte ($y' = f(x, y)$).
+
+   ### 1. Método de Euler (El pionero)
+   Avanza trazando líneas rectas puras usando la pendiente al inicio de cada intervalo.
+   * **Fórmula:** $y_{i+1} = y_i + h \\cdot f(x_i, y_i)$
+   * **Precisión:** Baja. Su error global es de orden lineal $O(h)$.
+
+   ### 2. Método de Heun (Euler Mejorado)
+   Calcula una pendiente al inicio, estima dónde terminaría (Predictor), calcula la pendiente en ese futuro, y promedia ambas pendientes para dar el paso final (Corrector).
+   * **Predictor:** $y_{i+1}^0 = y_i + h \\cdot f(x_i, y_i)$
+   * **Corrector:** $y_{i+1} = y_i + \\frac{h}{2} [f(x_i, y_i) + f(x_{i+1}, y_{i+1}^0)]$
+   * **Precisión:** Media. Su error global es de orden cuadrático $O(h^2)$.
+
+   ### 3. Runge-Kutta de 4to Orden (RK4)
+   Es el estándar absoluto de la industria. Calcula y promedia 4 pendientes distintas dentro del mismo intervalo $h$, dándole el doble de peso a las pendientes centrales.
+   1. $k_1 = f(x_i, y_i)$
+   2. $k_2 = f(x_i + \\frac{h}{2}, y_i + k_1 \\frac{h}{2})$
+   3. $k_3 = f(x_i + \\frac{h}{2}, y_i + k_2 \\frac{h}{2})$
+   4. $k_4 = f(x_i + h, y_i + k_3 h)$
+   * **Fórmula:** $y_{i+1} = y_i + \\frac{h}{6} (k_1 + 2k_2 + 2k_3 + k_4)$
+   * **Precisión:** Excelente. Su error global es de orden $O(h^4)$.
    """
 }
